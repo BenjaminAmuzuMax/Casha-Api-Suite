@@ -1,0 +1,602 @@
+{
+	"info": {
+		"_postman_id": "c50db980-ad38-4ef3-80f4-08485886459b",
+		"name": "Devops",
+		"schema": "https://schema.getpostman.com/json/collection/v2.0.0/collection.json",
+		"_exporter_id": "27366988",
+		"_collection_link": "https://solar-rocket-187285.postman.co/workspace/CASHA-WORKSPACE~de0797e4-2130-4b60-b152-d9147c47c29e/collection/27366988-c50db980-ad38-4ef3-80f4-08485886459b?action=share&creator=27366988&source=collection_link"
+	},
+	"item": [
+		{
+			"name": "Authenticate SC",
+			"item": [
+				{
+					"name": "Positive Test Scenario",
+					"item": [
+						{
+							"name": "Authenticate",
+							"event": [
+								{
+									"listen": "prerequest",
+									"script": {
+										"exec": [
+											"// phone number consistency",
+											"",
+											"// why is status code 250",
+											"",
+											""
+										],
+										"type": "text/javascript"
+									}
+								},
+								{
+									"listen": "test",
+									"script": {
+										"exec": [
+											"pm.test(\"Status code is 200\", function () {",
+											"    pm.response.to.have.status(200);",
+											"});",
+											"",
+											"pm.test(\"Login succesful\", function () {",
+											"    pm.expect(pm.response.json().message).to.equal(\"Successful login\");",
+											"});",
+											"",
+											"pm.test(\"Customer Id is present\", function () {",
+											"    pm.response.to.have.jsonBody('payload.customer.id');",
+											"});",
+											"",
+											"pm.test(\"Response has 'bvn' field in the customer object\", function () {",
+											"    pm.response.to.have.jsonBody('payload.customer.bvn');",
+											"});",
+											"// Parse the response JSON",
+											"const responseJson = pm.response.json();",
+											"",
+											"// Extract the otpKey value from the response",
+											"const otpKey = responseJson.payload.otpKey;",
+											"",
+											"// Set the otpKey value as an environmental variable",
+											"pm.environment.set('otpKey', otpKey);",
+											"",
+											"if (responseJson.success) {",
+											"    pm.environment.set('accessToken', responseJson.payload.accessToken);",
+											"}",
+											""
+										],
+										"type": "text/javascript"
+									}
+								}
+							],
+							"request": {
+								"auth": {
+									"type": "noauth"
+								},
+								"method": "POST",
+								"header": [
+									{
+										"key": "accept",
+										"value": "application/json"
+									},
+									{
+										"key": "Content-Type",
+										"value": "application/json"
+									},
+									{
+										"key": "{{deviceIdName}}",
+										"value": "{{deviceID}}xyz",
+										"type": "text"
+									},
+									{
+										"key": "{{smDetailName}}",
+										"value": "{{smDetail}}",
+										"type": "text"
+									}
+								],
+								"body": {
+									"mode": "raw",
+									"raw": "{\n  \"pin\": \"{{validPin}}\",\n  \"phoneNumber\": \"{{validPhonenumber}}\"\n}\n"
+								},
+								"url": "{{BaseUrl}}account/authenticate"
+							},
+							"response": [
+								{
+									"name": "Authenticate (Login)",
+									"originalRequest": {
+										"method": "POST",
+										"header": [
+											{
+												"key": "accept",
+												"value": "application/json"
+											},
+											{
+												"key": "Content-Type",
+												"value": "application/json"
+											},
+											{
+												"key": "x-device-id",
+												"value": "R0xPL2Vld2V3ZS90cnVl/1144ffe9-abca-474f-b41e-79c442166d31",
+												"type": "text"
+											},
+											{
+												"key": "x-sm-detail",
+												"value": "QUlSVEVML2Vld2V3ZS90cnVl",
+												"type": "text"
+											}
+										],
+										"body": {
+											"mode": "raw",
+											"raw": "{\n  \"pin\": \"2022\",\n  \"phoneNumber\": \"+2349159744531\"\n}"
+										},
+										"url": "{{BaseUrl}}account/authenticate"
+									},
+									"status": "unknown",
+									"code": 250,
+									"_postman_previewlanguage": "json",
+									"header": [
+										{
+											"key": "Access-Control-Allow-Origin",
+											"value": "*"
+										},
+										{
+											"key": "Content-Type",
+											"value": "application/json; charset=utf-8"
+										},
+										{
+											"key": "Content-Length",
+											"value": "294"
+										},
+										{
+											"key": "ETag",
+											"value": "W/\"126-prAwTKGEr0qWAJildEg6IYEVDUQ\""
+										},
+										{
+											"key": "Date",
+											"value": "Tue, 16 May 2023 10:25:03 GMT"
+										},
+										{
+											"key": "Connection",
+											"value": "keep-alive"
+										},
+										{
+											"key": "Keep-Alive",
+											"value": "timeout=5"
+										}
+									],
+									"cookie": [],
+									"body": "{\n    \"success\": true,\n    \"payload\": {\n        \"otpKey\": \"5Q3RwGGTHoOaIP+msrC62TAPEdHYFCzF3c15EQJRg/3sOB8KkeT/dGlaPx/g4CctwhiqNK6EZ2s/J0ZOPtGtL5SJP9/Y0dhqO6eFKlnHPlXn8pWVXpZOuI5DcZlpqPpWNLXTmOYYK1b+2EJ9VsI2CgGxRmbcVp95g3Y7nHnAa/CK/Q7jLwI/nunN8sNuYR22\"\n    },\n    \"message\": \"Retrieve otp sent to you via sms\",\n    \"statusCode\": 250\n}"
+								}
+							]
+						}
+					]
+				},
+				{
+					"name": "Negative Test Scenario",
+					"item": [
+						{
+							"name": "Authenticate (missing pin field)",
+							"event": [
+								{
+									"listen": "prerequest",
+									"script": {
+										"exec": [
+											"// phone number consistency",
+											"",
+											"// why is status code 250",
+											"",
+											"// missing pin is saying pin must be a string",
+											"",
+											""
+										],
+										"type": "text/javascript"
+									}
+								},
+								{
+									"listen": "test",
+									"script": {
+										"exec": [
+											"pm.test(\"Status code is 400\", function () {",
+											"    pm.response.to.have.status(400);",
+											"});",
+											"",
+											"pm.test(\"Input Pin to proceed \", function () {",
+											"    pm.expect(pm.response.json().message).to.equal(\"pin must be a number string\");",
+											"});",
+											""
+										],
+										"type": "text/javascript"
+									}
+								}
+							],
+							"request": {
+								"auth": {
+									"type": "bearer",
+									"bearer": {
+										"token": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6IjlhNjM5YzZiLTBjNzItNDk2OC1hMzUzLTk0M2ExNzFmZDEyMyIsImxvZ2luIjoiKzIzNDgxODE2OTI0NDkiLCJhdXRob3JpdGllcyI6WyJST0xFX1VTRVIiXSwiaWF0IjoxNjg0MjI1MzE3LCJleHAiOjE2ODQyMjYyMTd9.9RbSj3kKLtNHWEQwXhLq31fwVKZkP_kBJdkFeNdqlk4"
+									}
+								},
+								"method": "POST",
+								"header": [
+									{
+										"key": "accept",
+										"value": "application/json"
+									},
+									{
+										"key": "Content-Type",
+										"value": "application/json"
+									},
+									{
+										"key": "x-device-id",
+										"value": "R0xPL2Vld2V3ZS90cnVl/1144ffe9-abca-474f-b41e-79c442166d31",
+										"type": "text"
+									},
+									{
+										"key": "x-sm-detail",
+										"value": "QUlSVEVML2Vld2V3ZS90cnVl",
+										"type": "text"
+									}
+								],
+								"body": {
+									"mode": "raw",
+									"raw": "{\n  \"pin\": \"\",\n  \"phoneNumber\": \"{{phoneNumber}}\"\n}"
+								},
+								"url": "{{BaseUrl}}account/authenticate"
+							},
+							"response": [
+								{
+									"name": "Authenticate (Login)",
+									"originalRequest": {
+										"method": "POST",
+										"header": [
+											{
+												"key": "accept",
+												"value": "application/json"
+											},
+											{
+												"key": "Content-Type",
+												"value": "application/json"
+											},
+											{
+												"key": "x-device-id",
+												"value": "R0xPL2Vld2V3ZS90cnVl/1144ffe9-abca-474f-b41e-79c442166d31",
+												"type": "text"
+											},
+											{
+												"key": "x-sm-detail",
+												"value": "QUlSVEVML2Vld2V3ZS90cnVl",
+												"type": "text"
+											}
+										],
+										"body": {
+											"mode": "raw",
+											"raw": "{\n  \"pin\": \"2022\",\n  \"phoneNumber\": \"+2349159744531\"\n}"
+										},
+										"url": "{{BaseUrl}}account/authenticate"
+									},
+									"status": "unknown",
+									"code": 250,
+									"_postman_previewlanguage": "json",
+									"header": [
+										{
+											"key": "Access-Control-Allow-Origin",
+											"value": "*"
+										},
+										{
+											"key": "Content-Type",
+											"value": "application/json; charset=utf-8"
+										},
+										{
+											"key": "Content-Length",
+											"value": "294"
+										},
+										{
+											"key": "ETag",
+											"value": "W/\"126-prAwTKGEr0qWAJildEg6IYEVDUQ\""
+										},
+										{
+											"key": "Date",
+											"value": "Tue, 16 May 2023 10:25:03 GMT"
+										},
+										{
+											"key": "Connection",
+											"value": "keep-alive"
+										},
+										{
+											"key": "Keep-Alive",
+											"value": "timeout=5"
+										}
+									],
+									"cookie": [],
+									"body": "{\n    \"success\": true,\n    \"payload\": {\n        \"otpKey\": \"5Q3RwGGTHoOaIP+msrC62TAPEdHYFCzF3c15EQJRg/3sOB8KkeT/dGlaPx/g4CctwhiqNK6EZ2s/J0ZOPtGtL5SJP9/Y0dhqO6eFKlnHPlXn8pWVXpZOuI5DcZlpqPpWNLXTmOYYK1b+2EJ9VsI2CgGxRmbcVp95g3Y7nHnAa/CK/Q7jLwI/nunN8sNuYR22\"\n    },\n    \"message\": \"Retrieve otp sent to you via sms\",\n    \"statusCode\": 250\n}"
+								}
+							]
+						},
+						{
+							"name": "Authenticate (missing phone number field)",
+							"event": [
+								{
+									"listen": "prerequest",
+									"script": {
+										"exec": [
+											"// phone number consistency",
+											"",
+											"// why is status code 250",
+											"",
+											""
+										],
+										"type": "text/javascript"
+									}
+								},
+								{
+									"listen": "test",
+									"script": {
+										"exec": [
+											"pm.test(\"Status code is 400\", function () {",
+											"    pm.response.to.have.status(400);",
+											"});",
+											"",
+											"pm.test(\"PhoneNumber cannot be Empty\", function () {",
+											"    pm.expect(pm.response.json().message).to.equal(\"phoneNumber should not be empty\");",
+											"});",
+											""
+										],
+										"type": "text/javascript"
+									}
+								}
+							],
+							"request": {
+								"auth": {
+									"type": "bearer",
+									"bearer": {
+										"token": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6IjlhNjM5YzZiLTBjNzItNDk2OC1hMzUzLTk0M2ExNzFmZDEyMyIsImxvZ2luIjoiKzIzNDgxODE2OTI0NDkiLCJhdXRob3JpdGllcyI6WyJST0xFX1VTRVIiXSwiaWF0IjoxNjg0MjI1MzE3LCJleHAiOjE2ODQyMjYyMTd9.9RbSj3kKLtNHWEQwXhLq31fwVKZkP_kBJdkFeNdqlk4"
+									}
+								},
+								"method": "POST",
+								"header": [
+									{
+										"key": "accept",
+										"value": "application/json"
+									},
+									{
+										"key": "Content-Type",
+										"value": "application/json"
+									},
+									{
+										"key": "x-device-id",
+										"value": "R0xPL2Vld2V3ZS90cnVl/1144ffe9-abca-474f-b41e-79c442166d31",
+										"type": "text"
+									},
+									{
+										"key": "x-sm-detail",
+										"value": "QUlSVEVML2Vld2V3ZS90cnVl",
+										"type": "text"
+									}
+								],
+								"body": {
+									"mode": "raw",
+									"raw": "{\n  \"pin\": \"{{validPin}}\",\n  \"phoneNumber\": \"\"\n}"
+								},
+								"url": "{{BaseUrl}}account/authenticate"
+							},
+							"response": [
+								{
+									"name": "Authenticate (Login)",
+									"originalRequest": {
+										"method": "POST",
+										"header": [
+											{
+												"key": "accept",
+												"value": "application/json"
+											},
+											{
+												"key": "Content-Type",
+												"value": "application/json"
+											},
+											{
+												"key": "x-device-id",
+												"value": "R0xPL2Vld2V3ZS90cnVl/1144ffe9-abca-474f-b41e-79c442166d31",
+												"type": "text"
+											},
+											{
+												"key": "x-sm-detail",
+												"value": "QUlSVEVML2Vld2V3ZS90cnVl",
+												"type": "text"
+											}
+										],
+										"body": {
+											"mode": "raw",
+											"raw": "{\n  \"pin\": \"2022\",\n  \"phoneNumber\": \"+2349159744531\"\n}"
+										},
+										"url": "{{BaseUrl}}account/authenticate"
+									},
+									"status": "unknown",
+									"code": 250,
+									"_postman_previewlanguage": "json",
+									"header": [
+										{
+											"key": "Access-Control-Allow-Origin",
+											"value": "*"
+										},
+										{
+											"key": "Content-Type",
+											"value": "application/json; charset=utf-8"
+										},
+										{
+											"key": "Content-Length",
+											"value": "294"
+										},
+										{
+											"key": "ETag",
+											"value": "W/\"126-prAwTKGEr0qWAJildEg6IYEVDUQ\""
+										},
+										{
+											"key": "Date",
+											"value": "Tue, 16 May 2023 10:25:03 GMT"
+										},
+										{
+											"key": "Connection",
+											"value": "keep-alive"
+										},
+										{
+											"key": "Keep-Alive",
+											"value": "timeout=5"
+										}
+									],
+									"cookie": [],
+									"body": "{\n    \"success\": true,\n    \"payload\": {\n        \"otpKey\": \"5Q3RwGGTHoOaIP+msrC62TAPEdHYFCzF3c15EQJRg/3sOB8KkeT/dGlaPx/g4CctwhiqNK6EZ2s/J0ZOPtGtL5SJP9/Y0dhqO6eFKlnHPlXn8pWVXpZOuI5DcZlpqPpWNLXTmOYYK1b+2EJ9VsI2CgGxRmbcVp95g3Y7nHnAa/CK/Q7jLwI/nunN8sNuYR22\"\n    },\n    \"message\": \"Retrieve otp sent to you via sms\",\n    \"statusCode\": 250\n}"
+								}
+							]
+						}
+					]
+				}
+			]
+		},
+		{
+			"name": "Unbind SC",
+			"item": [
+				{
+					"name": "Change Device Flow",
+					"item": [
+						{
+							"name": "Change Device Flow",
+							"event": [
+								{
+									"listen": "prerequest",
+									"script": {
+										"exec": [
+											"// Token for other users works for others ",
+											"",
+											""
+										],
+										"type": "text/javascript"
+									}
+								},
+								{
+									"listen": "test",
+									"script": {
+										"exec": [
+											"// // Parse the response JSON",
+											"// const responseJson = pm.response.json();",
+											"",
+											"// // // Extract the otpKey value from the response",
+											"// // const otpKey = responseJson.payload.otpKey;",
+											"// // console.log(\"otpkey is \" + otpKey)",
+											"// // // Set the otpKey value as an environmental variable",
+											"// // pm.environment.set('otpKeyUnbind', otpKey);",
+											"",
+											"// //Test",
+											"// pm.test(\"Status code is 200\", function () {",
+											"//     pm.response.to.have.status(200);",
+											"// });",
+											"",
+											"// // pm.test(\"Payload contains 'otpKey'\", function () {",
+											"// //     pm.response.to.have.jsonBody(otpKey);",
+											"// // });",
+											"// pm.test(\"Otp sent via sms\", function () {",
+											"//     pm.expect(pm.response.json().message).to.equal(\"OTP sent to you via sms\");",
+											"// });",
+											""
+										],
+										"type": "text/javascript"
+									}
+								}
+							],
+							"request": {
+								"auth": {
+									"type": "noauth"
+								},
+								"method": "POST",
+								"header": [
+									{
+										"key": "{{smDetailName}}",
+										"value": "{{smDetail}}",
+										"type": "text"
+									},
+									{
+										"key": "{{deviceIdName}}",
+										"value": "{{deviceID}}",
+										"type": "text"
+									}
+								],
+								"body": {
+									"mode": "raw",
+									"raw": "// {\n\n//    \"phoneNumber\": \"+2348189033554\",\n\n//     \"championId\": \"MAX-IB-CH-4100\",\n\n//     \"verificationType\":\"champion_id\"\n\n// }\n\n// {\n\n//    \"phoneNumber\": \"+2348189033554\",\n\n//     \"bvn\": \"11111161111\" ,\n\n//     \"verificationType\":\"bvn\"\n\n// }\n\n{\n\n   \"phoneNumber\": \"+2349025115026\",\n\n    \"securityAnswer\": \"18\" ,\n\n    \"championId\": \"blah blah\",\n\n    \"bvn\":\"\",\n\n    \"verificationType\":\"answer_security_questions\"\n\n}",
+									"options": {
+										"raw": {
+											"language": "json"
+										}
+									}
+								},
+								"url": "{{BaseUrl}}account/change-device-flow"
+							},
+							"response": []
+						},
+						{
+							"name": "OTP for change device",
+							"request": {
+								"method": "POST",
+								"header": [
+									{
+										"key": "{{deviceIdName}}",
+										"value": "{{deviceID}}",
+										"type": "text"
+									},
+									{
+										"key": "{{smDetailName}}",
+										"value": "{{smDetail}}",
+										"type": "text"
+									}
+								],
+								"body": {
+									"mode": "raw",
+									"raw": "// {\n//   \"otp\": \"123456\",\n//   \"otpKey\": \"{{otpKeyUnbind}}\",\n//   \"phoneNumber\": \"{{imusePhoneNumber}}\"\n// }",
+									"options": {
+										"raw": {
+											"language": "json"
+										}
+									}
+								},
+								"url": "{{BaseUrl}}account/verify-otp-deviceunbind"
+							},
+							"response": []
+						}
+					]
+				},
+				{
+					"name": "Old Unbind request",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"pm.test(\"Status code is 200\", function () {\r",
+									"    pm.response.to.have.status(200);\r",
+									"});\r",
+									"\r",
+									"pm.test(\"Otp sent via sms\", function () {\r",
+									"    pm.expect(pm.response.json().message).to.equal(\"Account Unbinded successfully\");\r",
+									"});\r",
+									""
+								],
+								"type": "text/javascript"
+							}
+						}
+					],
+					"request": {
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n  \"phoneNumber\": \"{{validPhonenumber}}\",\n  \"password\": \"279eff00b75386e645234a52c30983da4808164f2d63\"\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": "{{BaseUrl}}account/unbind-users-device"
+					},
+					"response": []
+				}
+			]
+		}
+	]
+}
