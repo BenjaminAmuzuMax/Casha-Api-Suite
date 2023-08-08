@@ -17,5 +17,5 @@ Document for API Automation
       e. –reporter-htmlextra-export followed by the path to store the report
 
 The command to be executed looks like the below  :
-newman run /Users/benjaminamuzu/Downloads/Devops.postman_collection1.json -e /Users/benjaminamuzu/Downloads/CashaStaging.postman_environment.json -r htmlextra --reporter-htmlextra-export /Users/benjaminamuzu/Downloads
+newman run /Users/benjaminamuzu/Downloads/Devops.postman_collection1.json -e /Users/benjaminamuzu/Downloads/CashaStaging.postman_environment.json -r htmlextra --bail --reporter-htmlextra-export /Users/benjaminamuzu/Downloads
 
